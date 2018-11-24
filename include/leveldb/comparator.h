@@ -16,14 +16,17 @@ class Slice;
 // used as keys in an sstable or a database.  A Comparator implementation
 // must be thread-safe since leveldb may invoke its methods concurrently
 // from multiple threads.
+// 比较器提供切片数据的总体顺序，在一个数据库中称为key
 class LEVELDB_EXPORT Comparator {
  public:
+  //虚拟函数
   virtual ~Comparator();
 
   // Three-way comparison.  Returns value:
   //   < 0 iff "a" < "b",
   //   == 0 iff "a" == "b",
   //   > 0 iff "a" > "b"
+  //纯虚拟函数，比较两个切片数据
   virtual int Compare(const Slice& a, const Slice& b) const = 0;
 
   // The name of the comparator.  Used to check for comparator
@@ -36,6 +39,7 @@ class LEVELDB_EXPORT Comparator {
   //
   // Names starting with "leveldb." are reserved and should not be used
   // by any clients of this package.
+  //纯虚拟函数，比较器的名字
   virtual const char* Name() const = 0;
 
   // Advanced functions: these are used to reduce the space requirements
@@ -44,6 +48,7 @@ class LEVELDB_EXPORT Comparator {
   // If *start < limit, changes *start to a short string in [start,limit).
   // Simple comparator implementations may return with *start unchanged,
   // i.e., an implementation of this method that does nothing is correct.
+  // 找到最短的分离器
   virtual void FindShortestSeparator(
       std::string* start,
       const Slice& limit) const = 0;
@@ -51,12 +56,14 @@ class LEVELDB_EXPORT Comparator {
   // Changes *key to a short string >= *key.
   // Simple comparator implementations may return with *key unchanged,
   // i.e., an implementation of this method that does nothing is correct.
+  // 找到短的key
   virtual void FindShortSuccessor(std::string* key) const = 0;
 };
 
 // Return a builtin comparator that uses lexicographic byte-wise
 // ordering.  The result remains the property of this module and
 // must not be deleted.
+// 内建比较器，字典排序
 LEVELDB_EXPORT const Comparator* BytewiseComparator();
 
 }  // namespace leveldb

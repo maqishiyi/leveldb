@@ -107,6 +107,7 @@ inline bool operator!=(const Slice& x, const Slice& y) {
   return !(x == y);
 }
 
+//比较两个字符串大小，先比较较小长度的字符串，当前面的字符串相等时，比较两个字符串的长度
 inline int Slice::compare(const Slice& b) const {
   const size_t min_len = (size_ < b.size_) ? size_ : b.size_;
   int r = memcmp(data_, b.data_, min_len);

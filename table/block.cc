@@ -16,7 +16,9 @@
 namespace leveldb {
 
 inline uint32_t Block::NumRestarts() const {
+  //判断长度是否大于无符号整形值，字节数大于4
   assert(size_ >= sizeof(uint32_t));
+  // 返回最后4个字节
   return DecodeFixed32(data_ + size_ - sizeof(uint32_t));
 }
 
@@ -25,7 +27,7 @@ Block::Block(const BlockContents& contents)
       size_(contents.data.size()),
       owned_(contents.heap_allocated) {
   if (size_ < sizeof(uint32_t)) {
-    size_ = 0;  // Error marker
+    size_ = 0;  // Error marker 如果块字节数小于4，则构造函数错误。
   } else {
     size_t max_restarts_allowed = (size_-sizeof(uint32_t)) / sizeof(uint32_t);
     if (NumRestarts() > max_restarts_allowed) {
